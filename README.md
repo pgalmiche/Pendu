@@ -5,4 +5,10 @@ Objectif : se partager le travail et faire des pull requests en même temps pour
 
 Deadline : La rentrée des vacances.
 
-Test test test
+Pour travailler sur le pendu :
+$ cd <l'endroit où vous voulez ajouter le repo>
+$ git clone https://github.com/pgalmiche/Pendu.git
+[ Faire les modifs souhaitées ]
+$ git commit -a -m "Description des modifs effectuées"
+$ git push origin master
+
