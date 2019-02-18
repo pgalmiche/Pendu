@@ -15,6 +15,39 @@
  *
  */
 
+
+// -------------------- FUNCTIONS --------------------
+
+
+std::string random_word(){
+    std::vector<std::string> dico;
+    dico = {"MOT", "TEST", "COUCOU", "ENJOY"}; // à remplir depuis un fichier
+    RandomNumber<int> rnd(0,3);
+    return dico[rnd()];
+}
+
+char get_letter()// Pierre
+{
+    char letter;
+    bool correct = false;
+
+    while (!correct)
+    {
+        std::cout << " > ";
+        std::cin >> letter;
+
+        if (!(isalpha(letter))){
+            std::cout << "Not a letter, try again." << std::endl;
+        } else{
+            correct = true;
+        }
+    }
+    return toupper(letter);
+}//Retourne la lettre entrée en majuscule
+
+
+// -------------------- CLASS --------------------
+
 class Game
 {
 
@@ -23,10 +56,9 @@ class Game
 		Game(bool random = true, std::string word = "DEFAULT") {
 
             if (random) {
-                dico = {"MOT", "TEST", "COUCOU", "ENJOY"}; // remplir depuis fichier
                 sword = random_word();
             } else {
-                sword = word;// Donné par player 1. Mettre en majuscules
+                sword = word;// Donné par player 1. (Mettre en majuscules)
             }
 
             sizeW = sword.size();
@@ -61,82 +93,57 @@ class Game
 		void submit(const char l){
             bool isIn = 0;
             for(int i=0; i<sizeW; i++){
-                if(l == sword[i] && found[i] == 0){
-                    isIn = 1;
-                    found[i] = 1;
+                if(l == sword[i] && !found[i]){
+                    isIn = true;
+                    found[i] = true;
                     break;
                 }
             }
             if(!isIn){
                 nmistakes++;
                 if(nmistakes == 10){
-                    is_over = 1;
+                    is_over = true;
                 }
             }
             if(std::accumulate(found.begin(), found.end(), 0) == sizeW){
-                is_over = 1;
+                is_over = true;
             }
 		}
 
 
 		void print_result() const{
-            std::cout << "Nombre d'erreurs : " << nmistakes << "\n";
+            std::cout << "Nombre d'erreurs : " << nmistakes << std::endl;
             if(nmistakes == LIFE){
-                std::cout << "Vous avez perdu ... Try again!\n";
+                std::cout << "Vous avez perdu ... Try again!" << std::endl;
             }
             else{
-                std::cout << "Vous avez gagné ... BRAVO!\n";
+                std::cout << "Vous avez gagné ... BRAVO!" << std::endl;
             }
 		}
 
 
-		std::string get_secret() {
+		std::string get_secret() { //fonction inutile (pour tester)
 		    return sword;
 		}
 
 
 	private:
 
-		std::string random_word(){
-		    RandomNumber<int> rnd(0,3);
-		    return dico[rnd()];
-		}
-
+        friend std::string random_word();
 		std::string	        sword;// Par exemple SECRET (S E C R E T)
 		std::vector<bool>	found;// Par exemple FFTFFT (_ _ C _ _ T)
 		int                 sizeW;// Stocke la taille du mot secret
-
-		std::vector<std::string> dico;
 
 		int     nmistakes;
 		bool    is_over;
 };//Fin classe Game
 
 
-char get_letter()// Pierre
-{
-    char letter;
-    bool correct = false;
-
-    while (!correct)
-    {
-        std::cout << " > ";
-        std::cin >> letter;
-
-        if (!(isalpha(letter))){
-            std::cout << "Not a letter, try again." << std::endl;
-        } else{
-            correct = true;
-        }
-    }
-    return toupper(letter);
-}//Retourne la lettre entrée en majuscule
-
+// -------------------- MAIN --------------------
 
 int main()
 {
 	Game game(true);
-	std::cout << "sword : " << game.get_secret() << std::endl;
     game.print_state();
 	while(!game.over())
 	{
