@@ -4,17 +4,26 @@
 #include <vector>
 #include <ctype.h>
 
+#include "randomnumber.hpp"
+
 /**
  * Jeu du pendu pour terminal
  *
- * Authors : Léo Bois, Pierre Galmiche, ...
+ * Authors : Léo Bois, Pierre Galmiche, Mickael Bestard, ...
  *
  */
 
 class Game
 {
 	public:
-		Game();
+		Game(bool random = true, std::string word = "DEFAULT") {// Mickael
+            if (random) {
+                dico = {"MOT", "TEST", "COUCOU", "ENJOY"}; // remplir depuis fichier
+                sword = random_word();
+            } else {
+                sword = word;// Donné par player 1. Mettre en majuscules
+            }
+		}
 
 		bool over() const { return is_over; }
 
@@ -23,17 +32,26 @@ class Game
 
 		void print_result() const;
 
-	private:
-		std::string		random_word();
+		std::string get_secret() {
+		    return sword;
+		}
 
-		std::vector<char>	sword;// Par exemple SECRET (S E C R E T)
+	private:
+		std::string random_word(){
+		    RandomNumber<int> rnd(0,3);
+		    return dico[rnd()];
+		}
+
+		std::string	        sword;// Par exemple SECRET (S E C R E T)
 		std::vector<bool>	found;// Par exemple FFTFFT (_ _ C _ _ T)
 
-		int			nmistakes;
-		bool			is_over;
+		std::vector<std::string> dico;
+
+		int	    nmistakes;
+		bool    is_over;
 };
 
-char get_letter()//Pierre
+char get_letter()// Pierre
 {
     char letter;
     bool correct = false;
@@ -53,8 +71,9 @@ char get_letter()//Pierre
 
 int main()
 {
-	Game game();
-	while(!game.over())
+	Game game(true);
+	std::cout << "sword : " << game.get_secret() << std::endl;
+	/*while(!game.over())
 	{
 		// Affiche par exemple :
 		// nombre d'erreurs : 5  mot secret : _ _ C _ _ T
@@ -66,6 +85,6 @@ int main()
 		// Met à jour les attributs de game
 		game.submit(a);
 	}
-	game.print_result();
+	game.print_result();*/
 	return 0;
 }
