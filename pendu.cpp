@@ -140,7 +140,12 @@ class Game
 
 int main()
 {
-	Game game(true);
+    std::string word;
+
+    std::cout << "Player 1 : entrez un mot secret" << std::endl;
+    std::cin >> word;
+
+	Game game(false,word);
     game.print_state();
 	while(!game.over())
 	{
