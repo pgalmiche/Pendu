@@ -34,7 +34,7 @@ std::string random_word(){
         dico = {"MOT", "TEST", "COUCOU", "ENJOY"};
     }
 
-    RandomNumber<int> rnd(0,dico.size());
+    RandomNumber<int> rnd(0,dico.size()-1);
 
     return dico[rnd()];
 }
