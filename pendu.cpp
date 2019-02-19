@@ -16,6 +16,18 @@
  */
 
 
+// -------------------- STRUCT --------------------
+/* Pertinence de séparer STRUCT et CLASS : on en discutera */
+
+struct str_toupper // mettre en majucule un mot d'un coup
+{
+    char operator()(char c) const
+    {
+        return std::toupper(static_cast<unsigned char>(c));
+    }
+};
+
+
 // -------------------- FUNCTIONS --------------------
 
 std::string random_word(){
@@ -37,24 +49,39 @@ char get_letter()
 
         if (!(isalpha(letter))){
             std::cout << "Not a letter, try again." << std::endl;
-        } else{
+        } else {
             correct = true;
         }
     }
     return toupper(letter);
 }//Retourne la lettre entrée en majuscule
 
+std::string get_sword(){
 
-// -------------------- STRUCT --------------------
-/* Pertinence de séparer STRUCT et CLASS : on en discutera */
+    std::string word;
 
-struct str_toupper // mettre en majucule un mot d'un coup
-{
-    char operator()(char c) const
-    {
-        return std::toupper(static_cast<unsigned char>(c));
+    bool correct = false;
+    while (!correct){
+
+        correct = true;
+
+        std::cout << "Player 1: entrez un mot secret" << std::endl;
+        std::cout << " > ";
+        std::cin >> word;
+
+        for (int i = 0; i < word.size(); ++i) {
+            if (!(isalpha(word[i]))){ // Code à factoriser ? (cf get_letter)
+                std::cout << "Not a word, try again." << std::endl;
+                correct = false;
+                break;
+            }
+        }
     }
-};
+    std::transform(word.begin(), word.end(), word.begin(), str_toupper());
+
+    return word;
+}
+
 
 // -------------------- CLASS --------------------
 
@@ -154,10 +181,7 @@ int main()
 {
     std::string word;
 
-    std::cout << "Player 1 : entrez un mot secret" << std::endl;
-    std::cin >> word;
-
-    std::transform(word.begin(), word.end(), word.begin(), str_toupper());
+    word = get_sword();
 
 	Game game(false,word);
     game.print_state();
