@@ -33,7 +33,7 @@ struct str_toupper // mettre en majucule un mot d'un coup
 
 /* Cette implémentation nécessite d'avoir déjà créé le fichier */
 std::string random_word(){
-  
+
     std::string tmp;
     std::vector<std::string> dico;
 
