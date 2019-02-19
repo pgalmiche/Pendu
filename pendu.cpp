@@ -20,7 +20,7 @@
 std::string random_word(){
     std::vector<std::string> dico;
     dico = {"MOT", "TEST", "COUCOU", "ENJOY"}; // à remplir depuis un fichier
-    RandomNumber<int> rnd(0,3);
+    RandomNumber<int> rnd(0,dico.size());
     return dico[rnd()];
 }
 
