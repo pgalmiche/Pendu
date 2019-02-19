@@ -133,6 +133,7 @@ class Game
 		int                 sizeW;// Stocke la taille du mot secret
 		int     nmistakes;
 		bool    is_over;
+
 };//Fin classe Game
 
 
@@ -140,17 +141,35 @@ class Game
 
 int main()
 {
-	Game game(true);
-    game.print_state();
-	while(!game.over())
-	{
-		// Demande au joueur de saisir une lettre (et une seule)
-		char a;
-		a = get_letter();
-		// Met à jour les attributs de game
-		game.submit(a);
-		game.print_state();
-	}
-	game.print_result();
+    bool quit = false;
+
+    while (!quit) {
+
+        std::string etat = "";
+        quit = false;
+
+        Game game(true);
+        game.print_state();
+
+        while (!game.over()){
+            // Demande au joueur de saisir une lettre (et une seule)
+            char a;
+            a = get_letter();
+            // Met à jour les attributs de game
+            game.submit(a);
+            game.print_state();
+        }
+
+        game.print_result();
+        std::cout << "Recommencer ? Oui/Non " << std::endl;
+
+        while (etat.compare("Oui")!=0 && etat.compare("Non")!=0){
+            std::cout << "Repondez \"Oui\" ou \"Non\" : " << std::endl;
+            std::cin >> etat;
+        }
+        if (etat.compare("Non")==0)
+            quit = true;
+    }
+
 	return 0;
 }
