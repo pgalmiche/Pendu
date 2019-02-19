@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <ctype.h>
+#include <algorithm> // pour transform
 
 #include "randomnumber.hpp"
 #define LIFE 10
@@ -43,6 +44,17 @@ char get_letter()
     return toupper(letter);
 }//Retourne la lettre entrée en majuscule
 
+
+// -------------------- STRUCT --------------------
+/* Pertinence de séparer STRUCT et CLASS : on en discutera */
+
+struct str_toupper // mettre en majucule un mot d'un coup
+{
+    char operator()(char c) const
+    {
+        return std::toupper(static_cast<unsigned char>(c));
+    }
+};
 
 // -------------------- CLASS --------------------
 
@@ -144,6 +156,8 @@ int main()
 
     std::cout << "Player 1 : entrez un mot secret" << std::endl;
     std::cin >> word;
+
+    std::transform(word.begin(), word.end(), word.begin(), str_toupper());
 
 	Game game(false,word);
     game.print_state();
