@@ -1,6 +1,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <ctype.h>
 #include <algorithm> // pour transform
@@ -30,9 +31,25 @@ struct str_toupper // mettre en majucule un mot d'un coup
 
 // -------------------- FUNCTIONS --------------------
 
+/* Cette implémentation nécessite d'avoir déjà créé le fichier */
 std::string random_word(){
-    std::vector<std::string> dico{"MOT", "TEST", "COUCOU", "ENJOY"};
+  
+    std::string tmp;
+    std::vector<std::string> dico;
+
+    std::ifstream ifile("dictionnary.md", std::ios::in);
+    if(ifile){
+        while (!ifile.eof()){
+            ifile >> tmp;
+            dico.push_back(tmp);
+        }
+    }
+    else {//on n'a pas réussi à accéder au fichier
+        dico = {"MOT", "TEST", "COUCOU", "ENJOY"};
+    }
+
     RandomNumber<int> rnd(0,dico.size()-1);
+
     return dico[rnd()];
 }
 
@@ -99,12 +116,13 @@ class Game
 
             sizeW = sword.size();
             nmistakes = 0;
-            is_over = 0;
+            is_over = false;
 
             for(int i=0; i<sizeW; i++){
                 found.push_back(false);
             }
 		}
+
 
 		bool over() const {
             return is_over;
@@ -115,7 +133,7 @@ class Game
             std::cout << "Nombre de vies restantes : " << LIFE - nmistakes <<
             "\nlettre à trouver : ";
             for(int i=0; i<sizeW; i++){
-                if(found[i] == 1){
+                if(found[i]){
                     std::cout << sword[i] << " ";
                 }
                 else{
@@ -127,7 +145,7 @@ class Game
 
 
 		void submit(const char l){
-            bool isIn = 0;
+            bool isIn = false;
             for(int i=0; i<sizeW; i++){
                 if(l == sword[i] && !found[i]){
                     isIn = true;
@@ -164,13 +182,13 @@ class Game
 
 
 	private:
-
-        friend std::string random_word();
+        //Tentative de mise en page, voyez si on garde ou pas :
+        friend std::string  random_word();
 		std::string	        sword;// Par exemple SECRET (S E C R E T)
 		std::vector<bool>	found;// Par exemple FFTFFT (_ _ C _ _ T)
 		int                 sizeW;// Stocke la taille du mot secret
-		int     nmistakes;
-		bool    is_over;
+		int                 nmistakes;
+		bool                is_over;
 };//Fin classe Game
 
 
