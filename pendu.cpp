@@ -31,9 +31,8 @@ struct str_toupper // mettre en majucule un mot d'un coup
 // -------------------- FUNCTIONS --------------------
 
 std::string random_word(){
-    std::vector<std::string> dico;
-    dico = {"MOT", "TEST", "COUCOU", "ENJOY"}; // à remplir depuis un fichier
-    RandomNumber<int> rnd(0,dico.size());
+    std::vector<std::string> dico{"MOT", "TEST", "COUCOU", "ENJOY"};
+    RandomNumber<int> rnd(0,dico.size()-1);
     return dico[rnd()];
 }
 
@@ -90,12 +89,12 @@ class Game
 
 	public:
 
-		Game(bool random = true, std::string word = "DEFAULT") {
+		Game(int nbPlayers) {
 
-            if (random) {
+            if (nbPlayers == 1) { // pas vraiment un boolean: je laisse à 1
                 sword = random_word();
             } else {
-                sword = word;// Donné par player 1. (Mettre en majuscules)
+                sword = get_sword(); // ceci n'est pas un "getter" de la classe
             }
 
             sizeW = sword.size();
@@ -103,7 +102,7 @@ class Game
             is_over = 0;
 
             for(int i=0; i<sizeW; i++){
-                found.push_back(0);
+                found.push_back(false);
             }
 		}
 
@@ -179,11 +178,13 @@ class Game
 
 int main()
 {
-    std::string word;
+    int nbPlayers;
+    std::cout << "Bienvenue au jeu du Pendu !" << std::endl;
+    std::cout << "Combien de joueurs ? (1/2)" << std::endl;
+    std::cin >> nbPlayers;
 
-    word = get_sword();
+    Game game(nbPlayers);
 
-	Game game(false,word);
     game.print_state();
 	while(!game.over())
 	{
