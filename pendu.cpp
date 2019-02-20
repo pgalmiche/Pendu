@@ -152,7 +152,6 @@ public:
                     if(l == sword[i] && !found[i]){
                             isIn = true;
                             found[i] = true;
-                            break;
                     }
             }
             if(!isIn){
