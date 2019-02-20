@@ -126,43 +126,43 @@ public:
     }
     
     
-    bool over() const {
-            return is_over;
-    }
+    bool over() const { return is_over; }
     
     
-    void print_state() const{
+    void print_state() const
+    {
             std::cout << "Nombre de vies restantes : " << LIFE - nmistakes <<
                       "\nlettre à trouver : ";
-            for(int i=0; i<sizeW; i++){
-                    if(found[i]){
+            for(int i=0; i<sizeW; i++)
+            {
+                    if(found[i])
                             std::cout << sword[i] << " ";
-                    }
-                    else{
+                    else
                             std::cout << "_ ";
-                    }
             }
             std::cout << "\n\n";
     }
     
     
-    void submit(const char l){
+    void submit(const char l)
+    {
             bool isIn = false;
-            for(int i=0; i<sizeW; i++){
-                    if(l == sword[i] && !found[i]){
+            for(int i=0; i<sizeW; i++)
+            {
+                    if(l == sword[i] && !found[i])
+                    {
                             isIn = true;
                             found[i] = true;
                     }
             }
-            if(!isIn){
+            if(!isIn)
+            {
                     nmistakes++;
-                    if(nmistakes == 10){
+                    if(nmistakes == 10)
                             is_over = true;
-                    }
             }
-            if(std::accumulate(found.begin(), found.end(), 0) == sizeW){
+            if(std::accumulate(found.begin(), found.end(), 0) == sizeW)
                     is_over = true;
-            }
     }
     
     
@@ -177,11 +177,6 @@ public:
     }
     
     
-    std::string get_secret() { //fonction inutile (pour tester)
-            return sword;
-    }
-
-
 private:
     
     friend std::string  random_word();
