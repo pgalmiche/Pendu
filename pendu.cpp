@@ -96,7 +96,7 @@ std::string get_sword()
                 }
         }
         std::transform(word.begin(), word.end(), word.begin(), str_toupper());
-        
+        system("clear");
         return word;
 }
 
