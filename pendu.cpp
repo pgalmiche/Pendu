@@ -1,8 +1,10 @@
 #include <string.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <ctype.h>
+#include <algorithm> // pour transform
 
 #include "randomnumber.hpp"
 #define LIFE 10
@@ -15,12 +17,39 @@
  */
 
 
+// -------------------- STRUCT --------------------
+/* Pertinence de séparer STRUCT et CLASS : on en discutera */
+
+struct str_toupper // mettre en majucule un mot d'un coup
+{
+    char operator()(char c) const
+    {
+        return std::toupper(static_cast<unsigned char>(c));
+    }
+};
+
+
 // -------------------- FUNCTIONS --------------------
 
+/* Cette implémentation nécessite d'avoir déjà créé le fichier */
 std::string random_word(){
+
+    std::string tmp;
     std::vector<std::string> dico;
-    dico = {"MOT", "TEST", "COUCOU", "ENJOY"}; // à remplir depuis un fichier
-    RandomNumber<int> rnd(0,dico.size());
+
+    std::ifstream ifile("dictionnary.md", std::ios::in);
+    if(ifile){
+        while (!ifile.eof()){
+            ifile >> tmp;
+            dico.push_back(tmp);
+        }
+    }
+    else {//on n'a pas réussi à accéder au fichier
+        dico = {"MOT", "TEST", "COUCOU", "ENJOY"};
+    }
+
+    RandomNumber<int> rnd(0,dico.size()-1);
+
     return dico[rnd()];
 }
 
@@ -36,12 +65,38 @@ char get_letter()
 
         if (!(isalpha(letter))){
             std::cout << "Not a letter, try again." << std::endl;
-        } else{
+        } else {
             correct = true;
         }
     }
     return toupper(letter);
 }//Retourne la lettre entrée en majuscule
+
+std::string get_sword(){
+
+    std::string word;
+
+    bool correct = false;
+    while (!correct){
+
+        correct = true;
+
+        std::cout << "Player 1: entrez un mot secret" << std::endl;
+        std::cout << " > ";
+        std::cin >> word;
+
+        for (int i = 0; i < word.size(); ++i) {
+            if (!(isalpha(word[i]))){ // Code à factoriser ? (cf get_letter)
+                std::cout << "Not a word, try again." << std::endl;
+                correct = false;
+                break;
+            }
+        }
+    }
+    std::transform(word.begin(), word.end(), word.begin(), str_toupper());
+
+    return word;
+}
 
 
 // -------------------- CLASS --------------------
@@ -51,22 +106,23 @@ class Game
 
 	public:
 
-		Game(bool random = true, std::string word = "DEFAULT") {
+		Game(int nbPlayers) {
 
-            if (random) {
+            if (nbPlayers == 1) { // pas vraiment un boolean: je laisse à 1
                 sword = random_word();
             } else {
-                sword = word;// Donné par player 1. (Mettre en majuscules)
+                sword = get_sword(); // ceci n'est pas un "getter" de la classe
             }
 
             sizeW = sword.size();
             nmistakes = 0;
-            is_over = 0;
+            is_over = false;
 
             for(int i=0; i<sizeW; i++){
-                found.push_back(0);
+                found.push_back(false);
             }
 		}
+
 
 		bool over() const {
             return is_over;
@@ -77,7 +133,7 @@ class Game
             std::cout << "Nombre de vies restantes : " << LIFE - nmistakes <<
             "\nlettre à trouver : ";
             for(int i=0; i<sizeW; i++){
-                if(found[i] == 1){
+                if(found[i]){
                     std::cout << sword[i] << " ";
                 }
                 else{
@@ -89,7 +145,7 @@ class Game
 
 
 		void submit(const char l){
-            bool isIn = 0;
+            bool isIn = false;
             for(int i=0; i<sizeW; i++){
                 if(l == sword[i] && !found[i]){
                     isIn = true;
@@ -126,13 +182,13 @@ class Game
 
 
 	private:
-
-        friend std::string random_word();
+        //Tentative de mise en page, voyez si on garde ou pas :
+        friend std::string  random_word();
 		std::string	        sword;// Par exemple SECRET (S E C R E T)
 		std::vector<bool>	found;// Par exemple FFTFFT (_ _ C _ _ T)
 		int                 sizeW;// Stocke la taille du mot secret
-		int     nmistakes;
-		bool    is_over;
+		int                 nmistakes;
+		bool                is_over;
 };//Fin classe Game
 
 
@@ -140,7 +196,13 @@ class Game
 
 int main()
 {
-	Game game(true);
+    int nbPlayers;
+    std::cout << "Bienvenue au jeu du Pendu !" << std::endl;
+    std::cout << "Combien de joueurs ? (1/2)" << std::endl;
+    std::cin >> nbPlayers;
+
+    Game game(nbPlayers);
+
     game.print_state();
 	while(!game.over())
 	{
