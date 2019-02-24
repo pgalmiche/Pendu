@@ -173,7 +173,6 @@ public:
                     std::cout << "Vous avez perdu ... Try again!" << std::endl;
             else
                     std::cout << "Vous avez gagné ... BRAVO!" << std::endl;
-            
     }
     
     
